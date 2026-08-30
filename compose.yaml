@@ -1,0 +1,20 @@
+services:
+  terminal:
+    image: ${IMAGE:-ae2-terminal:local}
+    build:
+      context: .
+      args:
+        VERSION: ${VERSION:-0.0.0-local}
+    restart: unless-stopped
+    environment:
+      COOKIE_SECURE: "true"
+      LOG_LEVEL: ${LOG_LEVEL:-error}
+      PUBLIC_MODE: ${PUBLIC_MODE:-false}
+      UPSTREAM_URL: ${UPSTREAM_URL:-http://gtnh:2324}
+    ports:
+      - 127.0.0.1:2325:3000
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777

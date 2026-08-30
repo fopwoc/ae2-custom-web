@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*.*.*"
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Verify semantic tag
+        run: |
+          if [[ ! "$GITHUB_REF_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Tag must be an exact semantic version such as 1.2.3" >&2
+            exit 1
+          fi
+          [[ "$(git tag --points-at HEAD --list "$GITHUB_REF_NAME")" == "$GITHUB_REF_NAME" ]]
+      - name: Verify release commit is on the default branch
+        run: |
+          git fetch origin "$DEFAULT_BRANCH"
+          git merge-base --is-ancestor HEAD "origin/$DEFAULT_BRANCH"
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/metadata-action@v5
+        id: metadata
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/ae2-terminal
+          tags: |
+            type=raw,value=${{ github.ref_name }}
+            type=raw,value=latest
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          build-args: VERSION=${{ github.ref_name }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
