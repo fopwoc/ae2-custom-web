@@ -38,7 +38,7 @@ The Compose port is deliberately bound to `127.0.0.1:2325`; only Caddy should ex
 Requires Node.js 26 and pnpm 11.
 
 ```sh
-corepack enable
+npm install --global pnpm@11.19.0
 pnpm install
 VERSION=0.0.0-dev pnpm dev
 ```
