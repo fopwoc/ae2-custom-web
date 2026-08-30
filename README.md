@@ -1,5 +1,7 @@
 # AE2 Terminal
 
+[![CI](https://github.com/fopwoc/ae2-custom-web/actions/workflows/ci.yml/badge.svg)](https://github.com/fopwoc/ae2-custom-web/actions/workflows/ci.yml)
+
 A modern, mobile-friendly web terminal for [AE2 Web Integration](https://github.com/kuba6000/AE2-Web-Integration). It keeps the mod API behind a typed SvelteKit server proxy, owns browser login sessions, and presents inventory, craft planning, crafting CPUs, and tracked activity without exposing the upstream service publicly.
 
 > [!NOTE]
