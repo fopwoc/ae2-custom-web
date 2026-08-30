@@ -1,6 +1,7 @@
 FROM node:26.8.1-alpine3.23 AS build
 
 RUN npm install --global pnpm@11.19.0
+ENV CI=true
 WORKDIR /workspace
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json tokens.css ./
