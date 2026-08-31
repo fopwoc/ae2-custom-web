@@ -4,7 +4,10 @@
   import { api, jsonRequest } from '$lib/api/browser-client';
   import type { TerminalState } from '$lib/features/terminal-state.svelte';
 
-  let { state: terminal, username }: { state: TerminalState; username: string } = $props();
+  let {
+    state: terminal,
+    username,
+  }: { state: TerminalState; username: string } = $props();
   let searchInput: HTMLInputElement;
   let accountOpen = $state(false);
 
@@ -38,11 +41,14 @@
     <span>Network</span>
     <select
       value={terminal.selectedNetwork ?? ''}
-      onchange={(event) => terminal.chooseNetwork(Number(event.currentTarget.value))}
+      onchange={(event) =>
+        terminal.chooseNetwork(Number(event.currentTarget.value))}
       aria-label="Active AE2 network"
     >
       {#each terminal.networks as network (network.key)}
-        <option value={network.key}>{network.owner}{network.isOwned ? ' · personal' : ''}</option>
+        <option value={network.key}
+          >{network.owner}{network.isOwned ? ' · personal' : ''}</option
+        >
       {/each}
     </select>
   </label>
@@ -52,15 +58,13 @@
     <input
       bind:this={searchInput}
       bind:value={terminal.search}
-      placeholder={terminal.tab === 'inventory' ? 'Search stored items' : 'Filter this view'}
+      placeholder={terminal.tab === 'inventory'
+        ? 'Search items'
+        : 'Filter this view'}
       aria-label="Filter current view"
     />
     <kbd>⌘K</kbd>
   </label>
-
-  <div class="connection-state" title="Connected through the terminal proxy">
-    <span aria-hidden="true"></span> Online
-  </div>
 
   <div class="account-menu">
     <button
@@ -69,7 +73,9 @@
       aria-expanded={accountOpen}
       onclick={() => (accountOpen = !accountOpen)}
     >
-      <span class="avatar" aria-hidden="true">{username.slice(0, 1).toUpperCase()}</span>
+      <span class="avatar" aria-hidden="true"
+        >{username.slice(0, 1).toUpperCase()}</span
+      >
       <span>{username}</span>
       <span aria-hidden="true">⌄</span>
     </button>

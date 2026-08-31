@@ -1,9 +1,14 @@
 {
-  "date": "2026-08-30",
-  "framework": "empty project",
-  "fontStack": null,
-  "palette": null,
+  "date": "2026-08-31",
+  "framework": "SvelteKit 2 with Svelte 5",
+  "fontStack": "Space Grotesk, IBM Plex Sans, JetBrains Mono",
+  "palette": "Cobalt OKLCH tokens in tokens.css",
   "motion": "motion-cut",
-  "spacing": null,
-  "preserved": []
+  "spacing": "Named 4px-based spacing tokens",
+  "preserved": [
+    "Workbench macrostructure",
+    "Cobalt theme",
+    "N13 application shell navigation",
+    "Ft2 inline build footer"
+  ]
 }

@@ -7,12 +7,31 @@ test("player can browse the terminal workbench", async ({ page }) => {
   await page.getByRole("button", { name: "Open terminal" }).click();
 
   await expect(page.getByRole("heading", { name: "Inventory" })).toBeVisible();
-  await expect(page.locator(".item-row")).toHaveCount(3);
+  await expect(page.locator(".item-slot")).toHaveCount(3);
+  const gridColumns = await page
+    .locator(".item-grid")
+    .evaluate(
+      (grid) =>
+        getComputedStyle(grid).gridTemplateColumns.split(/\s+/).filter(Boolean)
+          .length,
+    );
+  expect(gridColumns).toBe((page.viewportSize()?.width ?? 0) > 1152 ? 9 : 4);
   await expectNoHorizontalOverflow(page);
 
   await page.getByLabel("Filter current view").fill("iron");
-  await expect(page.locator(".item-row")).toHaveCount(1);
+  await expect(page.locator(".item-slot")).toHaveCount(1);
   await page.getByLabel("Filter current view").fill("");
+
+  await page.getByRole("radio", { name: "All", exact: true }).check();
+  await expect(page.locator(".item-slot")).toHaveCount(4);
+  await page.getByRole("radio", { name: "Craftable", exact: true }).check();
+  await expect(page.locator(".item-slot")).toHaveCount(3);
+  await page.getByRole("radio", { name: "Stored", exact: true }).check();
+
+  await page.getByLabel("List").check();
+  await expect(page.locator(".item-row")).toHaveCount(3);
+  await page.reload();
+  await expect(page.getByLabel("List")).toBeChecked();
 
   await page.getByRole("button", { name: /Crafting CPUs/ }).click();
   await expect(page.getByText("2 processors on this network")).toBeVisible();
@@ -31,5 +50,5 @@ async function expectNoHorizontalOverflow(
     client: document.documentElement.clientWidth,
     scroll: document.documentElement.scrollWidth,
   }));
-  expect(dimensions.scroll).toBe(dimensions.client);
+  expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client);
 }

@@ -24,6 +24,13 @@ const items = [
     quantity: 348,
     craftable: false,
   },
+  {
+    hashcode: 104,
+    itemid: "appliedenergistics2:item.ItemMultiMaterial.CalculationProcessor",
+    itemname: "Calculation Processor",
+    quantity: 0,
+    craftable: true,
+  },
 ];
 
 const server = createServer((request, response) => {
