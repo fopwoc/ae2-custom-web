@@ -1,0 +1,23 @@
+{
+  "modListVersion": 2,
+  "modList": [
+    {
+      "modid": "${modId}",
+      "name": "${modName}",
+      "description": "Exports the active GTNH client's NEI item catalog as a web-ready icon pack.",
+      "version": "${modVersion}",
+      "mcversion": "${minecraftVersion}",
+      "url": "https://github.com/fopwoc/ae2-custom-web",
+      "updateUrl": "",
+      "authorList": ["fopwoc"],
+      "credits": "",
+      "logoFile": "",
+      "screenshots": [],
+      "parent": "",
+      "requiredMods": ["NotEnoughItems"],
+      "dependencies": [],
+      "dependants": [],
+      "useDependencyInformation": false
+    }
+  ]
+}

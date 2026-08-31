@@ -31,6 +31,7 @@ jobs:
         with:
           node-version: 26.8.1
           cache: pnpm
+      - run: sha256sum -c assets/icon-packs/gtnh-2.9.0-beta-2-default.sha256
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
       - run: pnpm check
@@ -48,5 +49,25 @@ jobs:
         with:
           name: ae2-terminal-${{ github.sha }}
           path: apps/terminal/build
+          if-no-files-found: error
+          retention-days: 14
+
+  exporter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: gradle
+          cache-dependency-path: mods/icon-exporter/**/*.gradle*
+      - run: ./mods/icon-exporter/gradlew -p mods/icon-exporter build --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ae2-icon-exporter-${{ github.sha }}
+          path: mods/icon-exporter/build/libs/*.jar
           if-no-files-found: error
           retention-days: 14

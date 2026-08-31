@@ -4,9 +4,11 @@
 .github
 .hallmark
 .pnpm-store
+ae2-icons
 build
 coverage
 dist
 node_modules
 playwright-report
 test-results
+mods

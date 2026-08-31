@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { resolve } from "node:path";
 
 export default defineConfig({
   testDir: "test/e2e",
@@ -20,6 +21,7 @@ export default defineConfig({
       command: "pnpm exec vite dev --host 127.0.0.1 --port 4173",
       env: {
         COOKIE_SECURE: "false",
+        ICON_PACK_DIR: resolve("test-results/icon-pack"),
         PUBLIC_MODE: "true",
         UPSTREAM_URL: "http://127.0.0.1:4324",
         VERSION: "0.0.0-e2e",

@@ -1,6 +1,7 @@
 import { Ae2Client } from "@ae2-terminal/ae2-api";
 
 export const config = {
+  iconPackDir: process.env.ICON_PACK_DIR?.trim() || null,
   logLevel: parseLogLevel(process.env.LOG_LEVEL),
   publicMode: process.env.PUBLIC_MODE?.toLowerCase() === "true",
   upstreamUrl: process.env.UPSTREAM_URL?.trim() || "http://gtnh:2324",

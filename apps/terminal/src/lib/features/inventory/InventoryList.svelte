@@ -1,16 +1,17 @@
 <script lang="ts">
-  import type { Item } from '@ae2-terminal/ae2-api';
-
   import { formatAmount, itemNamespace } from '$lib/api/format';
+
+  import type { InventoryItem } from './inventory-item';
+  import ItemVisual from './ItemVisual.svelte';
 
   let {
     items,
     selected,
     onselect,
   }: {
-    items: Item[];
-    selected: Item | null;
-    onselect: (item: Item) => void;
+    items: InventoryItem[];
+    selected: InventoryItem | null;
+    onselect: (item: InventoryItem) => void;
   } = $props();
 </script>
 
@@ -30,9 +31,7 @@
           onclick={() => onselect(item)}
         >
           <span class="item-identity">
-            <span class="item-tile" aria-hidden="true"
-              >{itemNamespace(item.itemid).slice(0, 2)}</span
-            >
+            <span class="item-tile" aria-hidden="true"><ItemVisual {item} /></span>
             <span
               ><strong>{item.itemname}</strong><code>{item.itemid}</code></span
             >

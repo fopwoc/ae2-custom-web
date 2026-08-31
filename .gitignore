@@ -5,6 +5,9 @@
 !.env.example
 .svelte-kit/
 .pnpm-store/
+ae2-icons/
+mods/**/.gradle/
+mods/**/run/
 build/
 coverage/
 dist/

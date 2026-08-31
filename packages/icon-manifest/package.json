@@ -1,0 +1,27 @@
+{
+  "name": "@ae2-terminal/icon-manifest",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist",
+    "schema"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema/manifest-v1.json": "./schema/manifest-v1.schema.json"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "typescript": "^6.0.0",
+    "vitest": "^4.1.11"
+  }
+}

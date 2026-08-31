@@ -1,32 +1,37 @@
 import { createServer } from "node:http";
+import { createHash } from "node:crypto";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 const port = Number(process.env.MOCK_PORT ?? 4324);
+
+createIconPack();
 
 const items = [
   {
     hashcode: 101,
-    itemid: "appliedenergistics2:item.ItemMultiMaterial",
+    itemid: "appliedenergistics2:item.ItemMultiMaterial:7",
     itemname: "Fluix Crystal",
     quantity: 12480,
     craftable: true,
   },
   {
     hashcode: 102,
-    itemid: "minecraft:iron_ingot",
+    itemid: "minecraft:iron_ingot:0",
     itemname: "Iron Ingot",
     quantity: 8192,
     craftable: true,
   },
   {
     hashcode: 103,
-    itemid: "gregtech:gt.metaitem.01",
+    itemid: "gregtech:gt.metaitem.01:17305",
     itemname: "Stainless Steel Plate",
     quantity: 348,
     craftable: false,
   },
   {
     hashcode: 104,
-    itemid: "appliedenergistics2:item.ItemMultiMaterial.CalculationProcessor",
+    itemid: "appliedenergistics2:item.ItemMultiMaterial:23",
     itemname: "Calculation Processor",
     quantity: 0,
     craftable: true,
@@ -188,4 +193,42 @@ function responseFor(pathname, search) {
   if (pathname === "/gridsettings")
     return { isTracked: search.get("track") === "1" };
   return null;
+}
+
+function createIconPack() {
+  const pack = resolve("test-results/icon-pack");
+  const png = Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+    "base64",
+  );
+  const hash = createHash("sha256").update(png).digest("hex");
+  rmSync(pack, { recursive: true, force: true });
+  mkdirSync(resolve(pack, "icons", hash.slice(0, 2)), { recursive: true });
+  writeFileSync(resolve(pack, "icons", hash.slice(0, 2), `${hash}.png`), png);
+  writeFileSync(
+    resolve(pack, "manifest.json"),
+    JSON.stringify({
+      schema: "ae2-icons/v1",
+      generatedAt: "2026-08-31T12:00:00Z",
+      environment: {
+        minecraft: "1.7.10",
+        iconSize: 64,
+        modsSha256: "c".repeat(64),
+        mods: ["test@1"],
+        resourcePacks: [],
+      },
+      entries: [
+        {
+          kind: "item",
+          registry: "minecraft:iron_ingot",
+          damage: 0,
+          nbtHash: null,
+          legacyId: "minecraft:iron_ingot:0",
+          displayName: "Iron Ingot",
+          png: `icons/${hash.slice(0, 2)}/${hash}.png`,
+        },
+      ],
+      failures: [],
+    }),
+  );
 }

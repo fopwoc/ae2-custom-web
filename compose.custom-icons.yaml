@@ -1,0 +1,6 @@
+services:
+  terminal:
+    environment:
+      ICON_PACK_DIR: /data/icons
+    volumes:
+      - ${ICON_PACK_PATH:-./ae2-icons}:/data/icons:ro

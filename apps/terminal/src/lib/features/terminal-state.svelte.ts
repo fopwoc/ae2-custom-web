@@ -1,11 +1,11 @@
 import type {
   ActivitySummary,
   CpuSummary,
-  Item,
   Network,
 } from "@ae2-terminal/ae2-api";
 
 import { api, BrowserApiError, jsonRequest } from "$lib/api/browser-client";
+import type { InventoryItem } from "$lib/features/inventory/inventory-item";
 
 export type TerminalTab = "inventory" | "crafting" | "activity";
 
@@ -13,10 +13,10 @@ export class TerminalState {
   networks = $state<Network[]>([]);
   selectedNetwork = $state<number | null>(null);
   tab = $state<TerminalTab>("inventory");
-  items = $state<Item[]>([]);
+  items = $state<InventoryItem[]>([]);
   cpus = $state<Record<string, CpuSummary>>({});
   activity = $state<ActivitySummary[]>([]);
-  selectedItem = $state<Item | null>(null);
+  selectedItem = $state<InventoryItem | null>(null);
   selectedCpu = $state<string | null>(null);
   selectedActivity = $state<number | null>(null);
   search = $state("");
@@ -81,7 +81,9 @@ export class TerminalState {
     this.error = null;
     try {
       if (this.tab === "inventory") {
-        this.items = await api<Item[]>(`/api/networks/${network}/items`);
+        this.items = await api<InventoryItem[]>(
+          `/api/networks/${network}/items`,
+        );
       } else if (this.tab === "crafting") {
         this.cpus = await api<Record<string, CpuSummary>>(
           `/api/networks/${network}/cpus`,

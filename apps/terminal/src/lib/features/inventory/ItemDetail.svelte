@@ -1,14 +1,15 @@
 <script lang="ts">
-  import type { Item } from '@ae2-terminal/ae2-api';
-
   import { formatAmount, itemNamespace } from '$lib/api/format';
 
-  let { item, onclose, oncraft }: { item: Item; onclose: () => void; oncraft: () => void } = $props();
+  import type { InventoryItem } from './inventory-item';
+  import ItemVisual from './ItemVisual.svelte';
+
+  let { item, onclose, oncraft }: { item: InventoryItem; onclose: () => void; oncraft: () => void } = $props();
 </script>
 
 <aside class="detail-panel" aria-label={`${item.itemname} details`}>
   <div class="panel-heading">
-    <span class="item-tile large" aria-hidden="true">{itemNamespace(item.itemid).slice(0, 2)}</span>
+    <span class="item-tile large" aria-hidden="true"><ItemVisual {item} lazy={false} /></span>
     <div>
       <p class="eyebrow">Item detail</p>
       <h2>{item.itemname}</h2>

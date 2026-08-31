@@ -488,10 +488,21 @@ kbd {
   background: var(--color-paper-2);
   border: 1px solid var(--color-rule);
 }
-.item-slot-glyph {
+.item-fallback {
   color: var(--color-accent);
   font: 700 clamp(0.85rem, 1.6vw, 1.25rem) / 1 var(--font-mono);
   text-transform: uppercase;
+}
+.item-icon {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.item-slot-visual > .item-icon {
+  width: min(78%, 4rem);
+  height: min(78%, 4rem);
 }
 .craft-marker {
   position: absolute;
@@ -516,6 +527,12 @@ kbd {
   font-variant-numeric: tabular-nums;
   text-overflow: ellipsis;
   text-shadow: 0 1px var(--color-paper);
+}
+.item-slot-visual.has-icon .item-slot-quantity {
+  padding: 0.12rem 0.18rem;
+  color: var(--color-paper);
+  background: color-mix(in oklch, var(--color-graphite) 78%, transparent);
+  text-shadow: none;
 }
 .item-slot-name {
   min-width: 0;
@@ -613,6 +630,13 @@ td code {
   border-radius: var(--radius-sm);
   font: 650 0.7rem/1 var(--font-mono);
   text-transform: uppercase;
+}
+.item-tile .item-icon {
+  width: 82%;
+  height: 82%;
+}
+.item-tile .item-fallback {
+  font-size: inherit;
 }
 .item-tile.large {
   width: 3.2rem;

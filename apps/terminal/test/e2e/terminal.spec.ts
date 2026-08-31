@@ -8,6 +8,15 @@ test("player can browse the terminal workbench", async ({ page }) => {
 
   await expect(page.getByRole("heading", { name: "Inventory" })).toBeVisible();
   await expect(page.locator(".item-slot")).toHaveCount(3);
+  const ironIcon = page
+    .getByRole("button", { name: /Iron Ingot/ })
+    .locator("img.item-icon");
+  await expect(ironIcon).toBeVisible();
+  await expect
+    .poll(() =>
+      ironIcon.evaluate((image: HTMLImageElement) => image.naturalWidth),
+    )
+    .toBeGreaterThan(0);
   const gridColumns = await page
     .locator(".item-grid")
     .evaluate(

@@ -1,16 +1,17 @@
 <script lang="ts">
-  import type { Item } from '@ae2-terminal/ae2-api';
+  import { formatAmount } from '$lib/api/format';
 
-  import { formatAmount, itemNamespace } from '$lib/api/format';
+  import type { InventoryItem } from './inventory-item';
+  import ItemVisual from './ItemVisual.svelte';
 
   let {
     items,
     selected,
     onselect,
   }: {
-    items: Item[];
-    selected: Item | null;
-    onselect: (item: Item) => void;
+    items: InventoryItem[];
+    selected: InventoryItem | null;
+    onselect: (item: InventoryItem) => void;
   } = $props();
 </script>
 
@@ -25,10 +26,12 @@
         title={`${item.itemname}\n${item.itemid}`}
         onclick={() => onselect(item)}
       >
-        <span class="item-slot-visual" aria-hidden="true">
-          <span class="item-slot-glyph"
-            >{itemNamespace(item.itemid).slice(0, 2)}</span
-          >
+        <span
+          class="item-slot-visual"
+          class:has-icon={item.iconUrl !== undefined}
+          aria-hidden="true"
+        >
+          <ItemVisual {item} />
           {#if item.craftable}<span class="craft-marker">C</span>{/if}
           <strong class="item-slot-quantity"
             >{formatAmount(item.quantity)}</strong

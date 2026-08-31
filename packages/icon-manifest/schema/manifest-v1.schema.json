@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/fopwoc/ae2-custom-web/blob/master/packages/icon-manifest/schema/manifest-v1.schema.json",
+  "title": "AE2 item icon manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "generatedAt", "environment", "entries", "failures"],
+  "properties": {
+    "schema": { "const": "ae2-icons/v1" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minecraft",
+        "iconSize",
+        "modsSha256",
+        "mods",
+        "resourcePacks"
+      ],
+      "properties": {
+        "minecraft": { "const": "1.7.10" },
+        "iconSize": { "type": "integer", "minimum": 1 },
+        "modsSha256": { "$ref": "#/$defs/sha256" },
+        "mods": { "type": "array", "items": { "type": "string" } },
+        "resourcePacks": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "registry",
+          "damage",
+          "legacyId",
+          "displayName",
+          "png"
+        ],
+        "properties": {
+          "kind": { "const": "item" },
+          "registry": { "type": "string", "minLength": 3 },
+          "damage": { "type": "integer" },
+          "nbtHash": {
+            "oneOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }]
+          },
+          "legacyId": { "type": "string", "minLength": 5 },
+          "displayName": { "type": "string" },
+          "png": {
+            "type": "string",
+            "pattern": "^icons/([0-9a-f]{2})/\\1[0-9a-f]{62}\\.png$"
+          }
+        }
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["legacyId", "displayName", "reason"],
+        "properties": {
+          "legacyId": { "type": ["string", "null"] },
+          "displayName": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

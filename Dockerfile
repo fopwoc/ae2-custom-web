@@ -19,6 +19,7 @@ RUN pnpm install --prod --frozen-lockfile
 FROM node:26.8.1-alpine3.23 AS runtime
 
 ENV HOST=0.0.0.0 \
+    ICON_PACK_DIR=/app/icon-pack \
     PORT=3000 \
     LOG_LEVEL=error \
     NODE_ENV=production
@@ -29,6 +30,7 @@ COPY --from=build --chown=node:node /workspace/apps/terminal/build ./apps/termin
 COPY --from=build --chown=node:node /workspace/apps/terminal/node_modules ./apps/terminal/node_modules
 COPY --from=build --chown=node:node /workspace/apps/terminal/package.json ./apps/terminal/package.json
 COPY --from=build --chown=node:node /workspace/packages ./packages
+ADD --chown=node:node assets/icon-packs/gtnh-2.9.0-beta-2-default.tar.gz /app/icon-pack/
 
 USER node
 EXPOSE 3000

@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@ae2-terminal/ae2-api": "workspace:*",
+    "@ae2-terminal/icon-manifest": "workspace:*",
     "@fontsource-variable/ibm-plex-sans": "^5.3.0",
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@fontsource-variable/space-grotesk": "^5.3.0",
