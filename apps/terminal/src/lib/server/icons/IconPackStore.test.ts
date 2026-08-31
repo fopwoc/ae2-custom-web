@@ -33,6 +33,9 @@ describe("IconPackStore", () => {
     expect(store.resolveIconUrl("minecraft:iron_ingot:0")).toBe(
       `/icons/${hash}.png`,
     );
+    expect(store.resolveIconUrl("unknown:item:0", "Iron Ingot")).toBe(
+      `/icons/${hash}.png`,
+    );
     await expect(store.readIcon(hash)).resolves.toEqual(
       expect.objectContaining({ byteLength: 3 }),
     );

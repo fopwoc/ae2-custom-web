@@ -61,4 +61,10 @@ describe("icon manifest", () => {
     expect(index.iconHash("minecraft:iron_ingot:0")).toBe(firstHash);
     expect(index.hasHash(secondHash)).toBe(true);
   });
+
+  it("falls back to a uniquely exported display name", () => {
+    const index = new IconManifestIndex(iconManifestSchema.parse(manifest()));
+
+    expect(index.iconHash("unknown:item:0", "§fIron Ingot")).toBe(firstHash);
+  });
 });

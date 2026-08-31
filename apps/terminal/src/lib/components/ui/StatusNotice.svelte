@@ -4,7 +4,7 @@
     title,
     message,
     action,
-    onaction
+    onaction,
   }: {
     kind?: 'empty' | 'error' | 'loading';
     title: string;
@@ -14,13 +14,21 @@
   } = $props();
 </script>
 
-<section class="status-notice" class:is-error={kind === 'error'} aria-live="polite">
-  <span class="status-mark" aria-hidden="true">{kind === 'error' ? '!' : kind === 'loading' ? '…' : '◇'}</span>
+<section
+  class="status-notice"
+  class:is-error={kind === 'error'}
+  aria-live="polite"
+>
+  <span class="status-mark" aria-hidden="true"
+    >{kind === 'error' ? '!' : kind === 'loading' ? '…' : '◇'}</span
+  >
   <div>
     <h2>{title}</h2>
     <p>{message}</p>
     {#if action && onaction}
-      <button class="button secondary" type="button" onclick={onaction}>{action}</button>
+      <button class="button secondary" type="button" onclick={onaction}
+        >{action}</button
+      >
     {/if}
   </div>
 </section>

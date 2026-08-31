@@ -2,13 +2,14 @@
   "date": "2026-08-31",
   "framework": "SvelteKit 2 with Svelte 5",
   "fontStack": "Space Grotesk, IBM Plex Sans, JetBrains Mono",
-  "palette": "Cobalt OKLCH tokens in tokens.css",
+  "palette": "Custom AE2 machined-grey OKLCH tokens in tokens.css and design.md",
   "motion": "motion-cut",
+  "slopTest": "pass (58/58)",
   "spacing": "Named 4px-based spacing tokens",
   "preserved": [
-    "Workbench macrostructure",
-    "Cobalt theme",
-    "N13 application shell navigation",
-    "Ft2 inline build footer"
+    "Terminal Chassis macrostructure",
+    "Two-mode terminal information architecture",
+    "Space Grotesk, IBM Plex Sans, and JetBrains Mono roles",
+    "Motion-cut interaction stance"
   ]
 }

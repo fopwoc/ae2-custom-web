@@ -4,6 +4,11 @@
   import '@fontsource-variable/space-grotesk';
   import 'uno.css';
   import '../app.css';
+  import '$lib/styles/ae2-shell.css';
+  import '$lib/styles/ae2-inventory.css';
+  import '$lib/styles/ae2-crafting.css';
+  import '$lib/styles/ae2-auth.css';
+  import '$lib/styles/ae2-responsive.css';
 
   import type { LayoutProps } from './$types';
 

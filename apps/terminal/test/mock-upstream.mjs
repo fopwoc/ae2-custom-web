@@ -36,6 +36,13 @@ const items = [
     quantity: 0,
     craftable: true,
   },
+  {
+    hashcode: 105,
+    itemid: "ammonium nitrate solution",
+    itemname: "Ammonium Nitrate Solution",
+    quantity: 4_000_000,
+    craftable: false,
+  },
 ];
 
 const server = createServer((request, response) => {
@@ -196,7 +203,9 @@ function responseFor(pathname, search) {
 }
 
 function createIconPack() {
-  const pack = resolve("test-results/icon-pack");
+  const pack = resolve(
+    process.env.ICON_PACK_TEST_DIR ?? "test-results/icon-pack",
+  );
   const png = Buffer.from(
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
     "base64",

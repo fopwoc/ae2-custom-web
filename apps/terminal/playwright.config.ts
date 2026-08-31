@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
+import { tmpdir } from "node:os";
 import { resolve } from "node:path";
+
+const testIconPackDir = resolve(tmpdir(), "ae2-terminal-e2e-icon-pack");
 
 export default defineConfig({
   testDir: "test/e2e",
@@ -14,6 +17,7 @@ export default defineConfig({
   webServer: [
     {
       command: "node test/mock-upstream.mjs",
+      env: { ICON_PACK_TEST_DIR: testIconPackDir },
       port: 4324,
       reuseExistingServer: !process.env.CI,
     },
@@ -21,7 +25,7 @@ export default defineConfig({
       command: "pnpm exec vite dev --host 127.0.0.1 --port 4173",
       env: {
         COOKIE_SECURE: "false",
-        ICON_PACK_DIR: resolve("test-results/icon-pack"),
+        ICON_PACK_DIR: testIconPackDir,
         PUBLIC_MODE: "true",
         UPSTREAM_URL: "http://127.0.0.1:4324",
         VERSION: "0.0.0-e2e",

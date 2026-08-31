@@ -1,5 +1,6 @@
 import { ae2 } from "$lib/server/config";
 import { iconPack } from "$lib/server/icons";
+import { inventoryResourceKind } from "$lib/api/resource-kind";
 import {
   apiResponse,
   integerParameter,
@@ -16,7 +17,10 @@ export const GET: RequestHandler = ({ cookies, locals, params }) => {
       integerParameter(params.network, "network"),
     );
     return items.map((item) => {
-      const iconUrl = iconPack.resolveIconUrl(item.itemid);
+      const iconUrl = iconPack.resolveIconUrl(
+        item.itemid,
+        inventoryResourceKind(item) === "item" ? item.itemname : undefined,
+      );
       return iconUrl ? { ...item, iconUrl } : item;
     });
   });

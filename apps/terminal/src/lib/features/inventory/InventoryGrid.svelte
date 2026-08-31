@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { formatAmount } from '$lib/api/format';
+  import { formatAmount, formatCompactAmount } from '$lib/api/format';
+  import TerminalIcon from '$lib/components/ui/TerminalIcon.svelte';
 
   import type { InventoryItem } from './inventory-item';
   import ItemVisual from './ItemVisual.svelte';
@@ -23,7 +24,7 @@
         class:selected={selected?.hashcode === item.hashcode}
         type="button"
         aria-label={`${item.itemname}, ${formatAmount(item.quantity)} available${item.craftable ? ', craftable' : ''}`}
-        title={`${item.itemname}\n${item.itemid}`}
+        title={`${item.itemname}\n${item.itemid}\n${formatAmount(item.quantity)} available${item.craftable ? '\nCraftable' : ''}`}
         onclick={() => onselect(item)}
       >
         <span
@@ -32,12 +33,15 @@
           aria-hidden="true"
         >
           <ItemVisual {item} />
-          {#if item.craftable}<span class="craft-marker">C</span>{/if}
+          {#if item.craftable}
+            <span class="craft-marker" title="Craftable">
+              <TerminalIcon name="craft" size={14} />
+            </span>
+          {/if}
           <strong class="item-slot-quantity"
-            >{formatAmount(item.quantity)}</strong
+            >{formatCompactAmount(item.quantity)}</strong
           >
         </span>
-        <span class="item-slot-name">{item.itemname}</span>
       </button>
     </li>
   {/each}

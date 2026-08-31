@@ -70,8 +70,8 @@ export class IconPackStore {
     }
   }
 
-  resolveIconUrl(legacyId: string): string | undefined {
-    const hash = this.#index?.iconHash(legacyId);
+  resolveIconUrl(legacyId: string, displayName?: string): string | undefined {
+    const hash = this.#index?.iconHash(legacyId, displayName);
     return hash ? `/icons/${hash}.png` : undefined;
   }
 

@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-08-31",
+    "macrostructure": "Terminal Chassis",
+    "variation": "dual resource rails and selected CPU bay",
+    "theme": "custom",
+    "theme_axes": "mid / geometric-sans / cool",
+    "vibe": "machined grey, recessed, dense, cyan signal",
+    "enrichment": "none",
+    "brief": "AE2 in-game terminal structure for items and crafting",
+    "scope": "app"
+  },
+  {
     "date": "2026-08-30",
     "macrostructure": "Workbench",
     "theme": "Cobalt",

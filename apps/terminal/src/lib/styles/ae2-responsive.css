@@ -1,0 +1,254 @@
+@media (max-width: 64rem) {
+  .item-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .craft-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 48rem) {
+  .app-shell {
+    padding-bottom: 0;
+  }
+
+  .app-header {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding: var(--space-xs) var(--space-sm);
+  }
+
+  .network-control {
+    justify-self: stretch;
+  }
+
+  .network-control > span,
+  .account-trigger > span:not(.avatar) {
+    display: none;
+  }
+
+  .workspace {
+    padding: var(--space-sm);
+  }
+
+  .terminal-frame {
+    box-shadow: 0.2rem 0.25rem 0 var(--color-graphite);
+  }
+
+  .terminal-titlebar {
+    min-height: 3.6rem;
+    padding-inline: var(--space-sm);
+  }
+
+  .app-navigation button {
+    min-width: 3rem;
+    min-height: 3rem;
+    padding: 0 var(--space-sm);
+  }
+
+  .app-navigation .nav-glyph {
+    display: none;
+  }
+
+  .inventory-workbench {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .resource-rail,
+  .mode-rail {
+    display: flex;
+    gap: var(--space-2xs);
+    padding: var(--space-2xs) var(--space-xs);
+    border-right: 0;
+    border-bottom: var(--rule-hair) solid var(--color-rule-strong);
+  }
+
+  .rail-button {
+    flex: 1;
+    min-height: 2.65rem;
+  }
+
+  .rail-button span:last-child {
+    display: inline;
+    font-size: var(--text-xs);
+  }
+
+  .cycle-button {
+    flex: 1;
+    min-height: 3rem;
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xs);
+  }
+
+  .cycle-button span {
+    display: none;
+  }
+
+  .cycle-button strong {
+    font-size: 0.68rem;
+  }
+
+  .item-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .crafting-workbench {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cpu-rail {
+    border-right: 0;
+    border-bottom: var(--rule-hair) solid var(--color-rule-strong);
+  }
+
+  .cpu-list {
+    grid-template-columns: repeat(3, minmax(11rem, 1fr));
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  .crafting-bay-heading {
+    align-items: start;
+  }
+
+  .craft-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .craft-slot {
+    min-height: 7.5rem;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+  }
+
+  .craft-slot-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .build-footer {
+    display: none;
+  }
+}
+
+@media (max-width: 38rem) {
+  .workspace {
+    padding: var(--space-xs);
+  }
+
+  .wordmark > span:last-child,
+  .terminal-kicker,
+  .nav-count,
+  .terminal-search kbd {
+    display: none;
+  }
+
+  .terminal-frame {
+    padding: var(--space-2xs);
+  }
+
+  .terminal-titlebar h1 {
+    font-size: var(--text-lg);
+  }
+
+  .app-navigation button {
+    min-width: 0;
+    padding-inline: var(--space-xs);
+    font-size: var(--text-xs);
+  }
+
+  .inventory-toolbar,
+  .crafting-toolbar {
+    gap: var(--space-xs);
+  }
+
+  .terminal-search {
+    width: auto;
+    flex: 1;
+  }
+
+  .inventory-toolbar .result-count,
+  .crafting-toolbar-status {
+    display: none;
+  }
+
+  .rail-button span:last-child {
+    display: none;
+  }
+
+  .item-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .item-list-header {
+    display: none;
+  }
+
+  .craft-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .crafting-bay-heading {
+    display: grid;
+  }
+
+  .cpu-readout {
+    justify-content: space-between;
+  }
+
+  .crafting-actions,
+  .crafting-actions > div {
+    flex-wrap: wrap;
+  }
+
+  .amount-input-row {
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+  }
+
+  .planner-item-slot {
+    width: 3.5rem;
+  }
+
+  .planner-item-label {
+    grid-column: 2 / -1;
+  }
+
+  .amount-field {
+    grid-column: 1 / 3;
+  }
+
+  .next-button {
+    grid-column: 3;
+  }
+
+  .amount-buttons {
+    gap: var(--space-2xs);
+  }
+
+  .amount-button {
+    padding-inline: var(--space-2xs);
+    font-size: var(--text-base);
+  }
+}
+
+@media (max-width: 23rem) {
+  .item-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .resource-rail,
+  .mode-rail {
+    overflow-x: auto;
+  }
+
+  .craft-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-track > span,
+  .machine-button {
+    transition: none;
+  }
+}

@@ -1,12 +1,17 @@
 <script lang="ts">
-  import type { TerminalState, TerminalTab } from '$lib/features/terminal-state.svelte';
+  import type {
+    TerminalState,
+    TerminalTab,
+  } from '$lib/features/terminal-state.svelte';
+  import TerminalIcon, {
+    type TerminalIconName,
+  } from '$lib/components/ui/TerminalIcon.svelte';
 
   let { state }: { state: TerminalState } = $props();
 
-  const tabs: { id: TerminalTab; label: string; glyph: string }[] = [
-    { id: 'inventory', label: 'Inventory', glyph: '▦' },
-    { id: 'crafting', label: 'Crafting CPUs', glyph: '⌁' },
-    { id: 'activity', label: 'Activity', glyph: '≋' }
+  const tabs: { id: TerminalTab; label: string; icon: TerminalIconName }[] = [
+    { id: 'inventory', label: 'Items', icon: 'items' },
+    { id: 'crafting', label: 'Crafting', icon: 'processor' },
   ];
 </script>
 
@@ -18,7 +23,7 @@
       aria-current={state.tab === tab.id ? 'page' : undefined}
       onclick={() => state.chooseTab(tab.id)}
     >
-      <span class="nav-glyph" aria-hidden="true">{tab.glyph}</span>
+      <span class="nav-glyph"><TerminalIcon name={tab.icon} size={18} /></span>
       <span>{tab.label}</span>
       {#if tab.id === 'crafting' && state.network?.cpuCount}
         <span class="nav-count">{state.network.cpuCount}</span>

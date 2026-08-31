@@ -1,5 +1,6 @@
 <script lang="ts">
   import { formatAmount, itemNamespace } from '$lib/api/format';
+  import { inventoryResourceKind } from '$lib/api/resource-kind';
 
   import type { InventoryItem } from './inventory-item';
   import ItemVisual from './ItemVisual.svelte';
@@ -31,12 +32,18 @@
           onclick={() => onselect(item)}
         >
           <span class="item-identity">
-            <span class="item-tile" aria-hidden="true"><ItemVisual {item} /></span>
+            <span class="item-tile" aria-hidden="true"
+              ><ItemVisual {item} /></span
+            >
             <span
               ><strong>{item.itemname}</strong><code>{item.itemid}</code></span
             >
           </span>
-          <span class="namespace">{itemNamespace(item.itemid)}</span>
+          <span class="namespace"
+            >{inventoryResourceKind(item) === 'fluid'
+              ? 'fluid'
+              : itemNamespace(item.itemid)}</span
+          >
           <strong class="quantity">{formatAmount(item.quantity)}</strong>
           <span class="craft-state" class:available={item.craftable}
             >{item.craftable ? 'Ready' : '—'}</span

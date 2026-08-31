@@ -7,7 +7,7 @@ import type {
 import { api, BrowserApiError, jsonRequest } from "$lib/api/browser-client";
 import type { InventoryItem } from "$lib/features/inventory/inventory-item";
 
-export type TerminalTab = "inventory" | "crafting" | "activity";
+export type TerminalTab = "inventory" | "crafting";
 
 export class TerminalState {
   networks = $state<Network[]>([]);
@@ -84,16 +84,12 @@ export class TerminalState {
         this.items = await api<InventoryItem[]>(
           `/api/networks/${network}/items`,
         );
-      } else if (this.tab === "crafting") {
+      } else {
         this.cpus = await api<Record<string, CpuSummary>>(
           `/api/networks/${network}/cpus`,
         );
         if (!this.selectedCpu)
           this.selectedCpu = Object.keys(this.cpus)[0] ?? null;
-      } else {
-        this.activity = await api<ActivitySummary[]>(
-          `/api/networks/${network}/activity`,
-        );
       }
     } catch (cause) {
       if (generation === this.#requestGeneration) {

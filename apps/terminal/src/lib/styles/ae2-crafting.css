@@ -1,0 +1,266 @@
+.crafting-toolbar .result-count {
+  margin-right: auto;
+}
+
+.crafting-workbench {
+  min-width: 0;
+  min-height: 30rem;
+  display: grid;
+  grid-template-columns: minmax(13rem, 18rem) minmax(0, 1fr);
+}
+
+.cpu-rail {
+  min-width: 0;
+  padding: var(--space-xs);
+  border-right: var(--rule-hair) solid var(--color-rule-strong);
+}
+
+.cpu-rail-heading {
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 0 var(--space-xs);
+  color: var(--color-muted);
+  font: 650 var(--text-xs)/1 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.cpu-list {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.cpu-card {
+  width: 100%;
+  min-width: 0;
+  min-height: 5.25rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2.75rem;
+  gap: var(--space-2xs) var(--space-xs);
+  padding: var(--space-sm);
+  text-align: left;
+  color: var(--color-ink);
+  background: var(--color-paper-3);
+  border: var(--rule-hair) solid var(--color-rule-strong);
+  border-radius: 0;
+  box-shadow:
+    inset 1px 1px var(--color-bevel-light),
+    inset -1px -1px var(--color-bevel-dark);
+}
+
+.cpu-card:hover {
+  background: var(--color-slot-hover);
+}
+
+.cpu-card.selected {
+  color: var(--color-accent-ink);
+  background: var(--color-accent);
+}
+
+.cpu-card-copy {
+  min-width: 0;
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.cpu-card-copy strong,
+.cpu-card-copy span,
+.cpu-capacity {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cpu-card-copy strong {
+  font-family: var(--font-display);
+}
+
+.cpu-card-copy span,
+.cpu-capacity {
+  color: color-mix(in oklch, currentColor 72%, transparent);
+  font: var(--text-xs)/1.2 var(--font-mono);
+}
+
+.cpu-card-output {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  display: grid;
+  place-items: center;
+}
+
+.cpu-card-output .item-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.cpu-capacity {
+  grid-column: 1;
+}
+
+.crafting-bay {
+  min-width: 0;
+  padding: var(--space-sm);
+}
+
+.crafting-bay-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-sm);
+  border-bottom: var(--rule-hair) solid var(--color-rule-strong);
+}
+
+.crafting-bay-heading h2 {
+  margin-bottom: var(--space-2xs);
+  font-size: var(--text-xl);
+}
+
+.crafting-bay-heading p:last-child {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.cpu-readout {
+  display: flex;
+  gap: var(--space-lg);
+  margin: 0;
+}
+
+.cpu-readout div {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.cpu-readout dt {
+  color: var(--color-muted);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.cpu-readout dd {
+  margin: 0;
+  font: 650 var(--text-sm)/1 var(--font-mono);
+}
+
+.overall-progress {
+  display: grid;
+  gap: var(--space-xs);
+  padding: var(--space-md) var(--space-sm);
+}
+
+.overall-progress > span:first-child {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.overall-progress strong {
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+}
+
+.progress-track {
+  height: 0.35rem;
+  display: block;
+  overflow: hidden;
+  background: var(--color-progress-track);
+  border: var(--rule-hair) solid var(--color-rule-strong);
+}
+
+.progress-track > span {
+  height: 100%;
+  display: block;
+  background: var(--color-success);
+}
+
+.craft-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  padding: 2px;
+  background: var(--color-rule-strong);
+  border: var(--rule-hair) solid var(--color-rule-strong);
+}
+
+.craft-slot {
+  position: relative;
+  min-width: 0;
+  min-height: 8.5rem;
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr auto;
+  gap: var(--space-2xs) var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--color-slot);
+  box-shadow:
+    inset 1px 1px var(--color-bevel-dark),
+    inset -1px -1px var(--color-bevel-light);
+}
+
+.craft-slot-icon {
+  grid-row: 1 / 4;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: grid;
+  place-items: center;
+}
+
+.craft-slot-icon .item-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.craft-slot-amount {
+  justify-self: end;
+  font: 700 var(--text-sm)/1 var(--font-mono);
+}
+
+.craft-slot-name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--text-sm);
+  font-weight: 650;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.craft-slot-state {
+  color: var(--color-muted);
+  font: var(--text-xs)/1 var(--font-mono);
+}
+
+.craft-slot .progress-track {
+  grid-column: 1 / -1;
+  align-self: end;
+}
+
+.crafting-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-sm) 0;
+  border-top: var(--rule-hair) solid var(--color-rule-strong);
+}
+
+.crafting-actions p {
+  margin: 0 auto 0 0;
+  color: var(--color-error);
+  font-size: var(--text-sm);
+}
+
+.crafting-actions > div {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.panel-loading {
+  min-height: 18rem;
+}

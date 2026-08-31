@@ -1,26 +1,13 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-
   import { api, jsonRequest } from '$lib/api/browser-client';
   import type { TerminalState } from '$lib/features/terminal-state.svelte';
+  import TerminalIcon from '$lib/components/ui/TerminalIcon.svelte';
 
   let {
     state: terminal,
     username,
   }: { state: TerminalState; username: string } = $props();
-  let searchInput: HTMLInputElement;
   let accountOpen = $state(false);
-
-  onMount(() => {
-    const handleShortcut = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-        event.preventDefault();
-        searchInput?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleShortcut);
-    return () => window.removeEventListener('keydown', handleShortcut);
-  });
 
   async function logout() {
     try {
@@ -33,8 +20,10 @@
 
 <header class="app-header">
   <a class="wordmark" href="/" aria-label="AE2 Terminal home">
-    <span class="wordmark-mark" aria-hidden="true">AE</span>
-    <span>Terminal</span>
+    <span class="wordmark-mark" aria-hidden="true"
+      ><TerminalIcon name="items" size={18} /></span
+    >
+    <span>ME Terminal</span>
   </a>
 
   <label class="network-control">
@@ -53,19 +42,6 @@
     </select>
   </label>
 
-  <label class="command-search">
-    <span class="search-icon" aria-hidden="true">⌕</span>
-    <input
-      bind:this={searchInput}
-      bind:value={terminal.search}
-      placeholder={terminal.tab === 'inventory'
-        ? 'Search items'
-        : 'Filter this view'}
-      aria-label="Filter current view"
-    />
-    <kbd>⌘K</kbd>
-  </label>
-
   <div class="account-menu">
     <button
       class="account-trigger"
@@ -77,7 +53,7 @@
         >{username.slice(0, 1).toUpperCase()}</span
       >
       <span>{username}</span>
-      <span aria-hidden="true">⌄</span>
+      <span aria-hidden="true"><TerminalIcon name="chevron" size={14} /></span>
     </button>
     {#if accountOpen}
       <div class="account-popover">
