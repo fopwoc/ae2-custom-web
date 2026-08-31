@@ -17,6 +17,15 @@ test("player can browse the terminal workbench", async ({ page }) => {
       ironIcon.evaluate((image: HTMLImageElement) => image.naturalWidth),
     )
     .toBeGreaterThan(0);
+  const fluidIcon = page
+    .getByRole("button", { name: /Ammonium Nitrate Solution/ })
+    .locator("img.item-icon");
+  await expect(fluidIcon).toBeVisible();
+  await expect
+    .poll(() =>
+      fluidIcon.evaluate((image: HTMLImageElement) => image.naturalWidth),
+    )
+    .toBeGreaterThan(0);
   const gridColumns = await page
     .locator(".item-grid")
     .evaluate(

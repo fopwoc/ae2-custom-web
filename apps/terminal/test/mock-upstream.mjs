@@ -236,6 +236,12 @@ function createIconPack() {
           displayName: "Iron Ingot",
           png: `icons/${hash.slice(0, 2)}/${hash}.png`,
         },
+        {
+          kind: "fluid",
+          fluidId: "ammonium nitrate solution",
+          displayName: "Ammonium Nitrate Solution",
+          png: `icons/${hash.slice(0, 2)}/${hash}.png`,
+        },
       ],
       failures: [],
     }),

@@ -42,7 +42,7 @@ Use the bundled base pack when playing with the stock resources.
 
 ### Icon exporter mod
 
-The repository includes a client-only Forge mod for GTNH 1.7.10 under `mods/icon-exporter/`. It reads the item variants resolved by NEI and renders them through the running Minecraft client, so the exported icons reflect the installed mods and active resource packs. The resulting pack contains content-addressed PNG files plus a `manifest.json` that maps AE2 item identities to those files. Nothing needs to be installed on the Minecraft server.
+The repository includes a client-only Forge mod for GTNH 1.7.10 under `mods/icon-exporter/`. It reads the item variants resolved by NEI and the live Forge fluid registry, then renders both through the running Minecraft client so exported icons reflect the installed mods and active resource packs. The resulting pack contains content-addressed PNG files plus a `manifest.json` that maps AE2 item identities and exact fluid registry IDs to those files. Cells remain ordinary item entries. Nothing needs to be installed on the Minecraft server.
 
 ![GTNH icon exporter progress screen](.github/assets/icon-exporter-progress.png)
 
@@ -70,7 +70,7 @@ The export runs incrementally on its own progress screen. Keep that screen open 
    docker compose -f compose.yaml -f compose.custom-icons.yaml up --build -d
    ```
 
-Exports are immutable snapshots. Re-export after changing the modpack or resource packs. Failed renders are recorded in `manifest.json` and the UI falls back per item. The current AE2 Web Integration response identifies items as `registry:damage`; if multiple exported NBT variants share that legacy ID, the first deterministic entry is used.
+Exports are immutable snapshots. Re-export after changing the modpack or resource packs. Failed renders are recorded in `manifest.json` and the UI falls back per resource. The current AE2 Web Integration response identifies items as `registry:damage`; if multiple exported NBT variants share that legacy ID, the first deterministic entry is used. New exports resolve fluids directly by registry ID. For older item-only packs such as the bundled base pack, the terminal falls back to a matching cell visual and deterministically prefers the GTNH-native GregTech or BartWorks cell when several exist.
 
 Custom exports under `./ae2-icons/` are intentionally ignored by Git. The versioned stock archive embedded in the image lives under `assets/icon-packs/`.
 

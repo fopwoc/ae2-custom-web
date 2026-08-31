@@ -17,10 +17,10 @@ export const GET: RequestHandler = ({ cookies, locals, params }) => {
       integerParameter(params.network, "network"),
     );
     return items.map((item) => {
-      const iconUrl = iconPack.resolveIconUrl(
-        item.itemid,
-        inventoryResourceKind(item) === "item" ? item.itemname : undefined,
-      );
+      const iconUrl =
+        inventoryResourceKind(item) === "fluid"
+          ? iconPack.resolveFluidIconUrl(item.itemid, item.itemname)
+          : iconPack.resolveIconUrl(item.itemid, item.itemname);
       return iconUrl ? { ...item, iconUrl } : item;
     });
   });

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/fopwoc/ae2-custom-web/blob/master/packages/icon-manifest/schema/manifest-v1.schema.json",
-  "title": "AE2 item icon manifest v1",
+  "title": "AE2 resource icon manifest v1",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "generatedAt", "environment", "entries", "failures"],
@@ -29,30 +29,42 @@
     "entries": {
       "type": "array",
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "kind",
-          "registry",
-          "damage",
-          "legacyId",
-          "displayName",
-          "png"
-        ],
-        "properties": {
-          "kind": { "const": "item" },
-          "registry": { "type": "string", "minLength": 3 },
-          "damage": { "type": "integer" },
-          "nbtHash": {
-            "oneOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }]
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "registry",
+              "damage",
+              "legacyId",
+              "displayName",
+              "png"
+            ],
+            "properties": {
+              "kind": { "const": "item" },
+              "registry": { "type": "string", "minLength": 3 },
+              "damage": { "type": "integer" },
+              "nbtHash": {
+                "oneOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }]
+              },
+              "legacyId": { "type": "string", "minLength": 5 },
+              "displayName": { "type": "string" },
+              "png": { "$ref": "#/$defs/iconPath" }
+            }
           },
-          "legacyId": { "type": "string", "minLength": 5 },
-          "displayName": { "type": "string" },
-          "png": {
-            "type": "string",
-            "pattern": "^icons/([0-9a-f]{2})/\\1[0-9a-f]{62}\\.png$"
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "fluidId", "displayName", "png"],
+            "properties": {
+              "kind": { "const": "fluid" },
+              "fluidId": { "type": "string", "minLength": 1 },
+              "displayName": { "type": "string" },
+              "png": { "$ref": "#/$defs/iconPath" }
+            }
           }
-        }
+        ]
       }
     },
     "failures": {
@@ -63,6 +75,7 @@
         "required": ["legacyId", "displayName", "reason"],
         "properties": {
           "legacyId": { "type": ["string", "null"] },
+          "fluidId": { "type": "string", "minLength": 1 },
           "displayName": { "type": "string" },
           "reason": { "type": "string" }
         }
@@ -73,6 +86,10 @@
     "sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
+    },
+    "iconPath": {
+      "type": "string",
+      "pattern": "^icons/([0-9a-f]{2})/\\1[0-9a-f]{62}\\.png$"
     }
   }
 }

@@ -1,6 +1,8 @@
 export {
   iconExportFailureSchema,
   iconManifestEntrySchema,
+  iconManifestFluidEntrySchema,
+  iconManifestItemEntrySchema,
   iconManifestSchema,
   type IconManifest,
   type IconManifestEntry,

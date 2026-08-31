@@ -2,6 +2,8 @@
 
 `gtnh-2.9.0-beta-2-default.tar.gz` is the stock icon pack embedded in the container image. It was exported from GTNH 2.9.0 beta 2 without a custom resource pack.
 
+This initial pack contains item entries. The terminal resolves fluids through matching rendered cells when using it; packs created by the current exporter also contain first-class fluid texture entries keyed by Forge fluid registry ID.
+
 The archive contains an `ae2-icons/v1` manifest and its content-addressed PNG tree:
 
 - generated: 2026-08-31T11:30:22.766310Z

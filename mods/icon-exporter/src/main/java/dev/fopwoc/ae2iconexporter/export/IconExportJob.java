@@ -18,6 +18,9 @@ import javax.imageio.ImageIO;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.google.gson.Gson;
@@ -39,7 +42,9 @@ public final class IconExportJob {
 
     private final Path outputDirectory;
     private final ItemIconRenderer renderer = new ItemIconRenderer();
+    private final FluidIconRenderer fluidRenderer = new FluidIconRenderer();
     private final List<ExportItem> items = new ArrayList<ExportItem>();
+    private final List<ExportFluid> fluids = new ArrayList<ExportFluid>();
     private final JsonArray entries = new JsonArray();
     private final JsonArray failures = new JsonArray();
     private int processed;
@@ -49,6 +54,7 @@ public final class IconExportJob {
     public IconExportJob(Path outputDirectory) throws IOException {
         this.outputDirectory = outputDirectory;
         collectItems();
+        collectFluids();
         Files.createDirectories(outputDirectory.resolve("icons"));
     }
 
@@ -57,12 +63,16 @@ public final class IconExportJob {
             return;
         }
 
-        int limit = Math.min(items.size(), processed + batchSize);
+        int limit = Math.min(total(), processed + batchSize);
         while (processed < limit) {
-            export(items.get(processed));
+            if (processed < items.size()) {
+                export(items.get(processed));
+            } else {
+                export(fluids.get(processed - items.size()));
+            }
             processed++;
         }
-        if (processed == items.size()) {
+        if (processed == total()) {
             finish();
         }
     }
@@ -72,7 +82,7 @@ public final class IconExportJob {
     }
 
     public int total() {
-        return items.size();
+        return items.size() + fluids.size();
     }
 
     public boolean complete() {
@@ -106,28 +116,25 @@ public final class IconExportJob {
                 IconIdentity identity = IconIdentity.from(stack);
                 unique.putIfAbsent(identity.key(), new ExportItem(identity, stack));
             } catch (Throwable cause) {
-                addFailure(null, source, cause);
+                addItemFailure(null, source, cause);
             }
         }
         items.addAll(unique.values());
         items.sort(Comparator.comparing(item -> item.identity.key()));
     }
 
+    private void collectFluids() {
+        for (Map.Entry<String, Fluid> entry : FluidRegistry.getRegisteredFluids()
+            .entrySet()) {
+            fluids.add(new ExportFluid(entry.getKey(), entry.getValue()));
+        }
+        fluids.sort(Comparator.comparing(fluid -> fluid.fluidId));
+    }
+
     private void export(ExportItem item) {
         try {
             BufferedImage image = renderer.render(item.stack);
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            if (!ImageIO.write(image, "png", bytes)) {
-                throw new IOException("No PNG writer is available");
-            }
-            byte[] png = bytes.toByteArray();
-            String hash = Hashing.sha256(png);
-            String relativePath = "icons/" + hash.substring(0, 2) + "/" + hash + ".png";
-            Path destination = outputDirectory.resolve(relativePath);
-            Files.createDirectories(destination.getParent());
-            if (!Files.exists(destination)) {
-                Files.write(destination, png);
-            }
+            String relativePath = writeImage(image);
 
             JsonObject entry = new JsonObject();
             entry.addProperty("kind", "item");
@@ -143,8 +150,40 @@ public final class IconExportJob {
             entry.addProperty("png", relativePath);
             entries.add(entry);
         } catch (Throwable cause) {
-            addFailure(item.identity, item.stack, cause);
+            addItemFailure(item.identity, item.stack, cause);
         }
+    }
+
+    private void export(ExportFluid fluid) {
+        FluidStack stack = new FluidStack(fluid.fluid, 1000);
+        String displayName = fluidDisplayName(fluid.fluidId, fluid.fluid, stack);
+        try {
+            String relativePath = writeImage(fluidRenderer.render(fluid.fluid));
+            JsonObject entry = new JsonObject();
+            entry.addProperty("kind", "fluid");
+            entry.addProperty("fluidId", fluid.fluidId);
+            entry.addProperty("displayName", displayName);
+            entry.addProperty("png", relativePath);
+            entries.add(entry);
+        } catch (Throwable cause) {
+            addFluidFailure(fluid.fluidId, displayName, cause);
+        }
+    }
+
+    private String writeImage(BufferedImage image) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        if (!ImageIO.write(image, "png", bytes)) {
+            throw new IOException("No PNG writer is available");
+        }
+        byte[] png = bytes.toByteArray();
+        String hash = Hashing.sha256(png);
+        String relativePath = "icons/" + hash.substring(0, 2) + "/" + hash + ".png";
+        Path destination = outputDirectory.resolve(relativePath);
+        Files.createDirectories(destination.getParent());
+        if (!Files.exists(destination)) {
+            Files.write(destination, png);
+        }
+        return relativePath;
     }
 
     private void finish() {
@@ -171,7 +210,7 @@ public final class IconExportJob {
                 Files.move(temporary, destination, StandardCopyOption.REPLACE_EXISTING);
             }
             Ae2IconExporterMod.LOG.info(
-                "Exported {} item icons with {} failures to {}",
+                "Exported {} resource icons with {} failures to {}",
                 entries.size(),
                 failures.size(),
                 outputDirectory);
@@ -210,7 +249,7 @@ public final class IconExportJob {
         return environment;
     }
 
-    private void addFailure(IconIdentity identity, ItemStack stack, Throwable cause) {
+    private void addItemFailure(IconIdentity identity, ItemStack stack, Throwable cause) {
         JsonObject failure = new JsonObject();
         if (identity == null) {
             failure.add("legacyId", JsonNull.INSTANCE);
@@ -233,6 +272,30 @@ public final class IconExportJob {
         Ae2IconExporterMod.LOG.warn("Unable to export icon for {}", displayName, cause);
     }
 
+    private void addFluidFailure(String fluidId, String displayName, Throwable cause) {
+        JsonObject failure = new JsonObject();
+        failure.add("legacyId", JsonNull.INSTANCE);
+        failure.addProperty("fluidId", fluidId);
+        failure.addProperty("displayName", displayName);
+        failure.addProperty(
+            "reason",
+            cause.getClass()
+                .getSimpleName() + ": "
+                + String.valueOf(cause.getMessage()));
+        failures.add(failure);
+        Ae2IconExporterMod.LOG.warn("Unable to export fluid icon for {}", fluidId, cause);
+    }
+
+    private static String fluidDisplayName(String fluidId, Fluid fluid, FluidStack stack) {
+        try {
+            String displayName = fluid.getLocalizedName(stack);
+            return displayName == null || displayName.trim()
+                .isEmpty() ? fluidId : displayName;
+        } catch (Throwable ignored) {
+            return fluidId;
+        }
+    }
+
     private static final class ExportItem {
 
         private final IconIdentity identity;
@@ -241,6 +304,17 @@ public final class IconExportJob {
         private ExportItem(IconIdentity identity, ItemStack stack) {
             this.identity = identity;
             this.stack = stack;
+        }
+    }
+
+    private static final class ExportFluid {
+
+        private final String fluidId;
+        private final Fluid fluid;
+
+        private ExportFluid(String fluidId, Fluid fluid) {
+            this.fluidId = fluidId;
+            this.fluid = fluid;
         }
     }
 }

@@ -97,7 +97,7 @@ final class ItemIconRenderer {
         return toImage(pixels);
     }
 
-    private static BufferedImage toImage(ByteBuffer pixels) {
+    static BufferedImage toImage(ByteBuffer pixels) {
         BufferedImage image = new BufferedImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < ICON_SIZE; y++) {
             for (int x = 0; x < ICON_SIZE; x++) {

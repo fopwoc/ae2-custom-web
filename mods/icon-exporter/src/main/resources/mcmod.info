@@ -4,7 +4,7 @@
     {
       "modid": "${modId}",
       "name": "${modName}",
-      "description": "Exports the active GTNH client's NEI item catalog as a web-ready icon pack.",
+      "description": "Exports the active GTNH client's item and fluid catalogs as a web-ready icon pack.",
       "version": "${modVersion}",
       "mcversion": "${minecraftVersion}",
       "url": "https://github.com/fopwoc/ae2-custom-web",

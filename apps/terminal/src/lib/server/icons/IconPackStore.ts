@@ -75,6 +75,14 @@ export class IconPackStore {
     return hash ? `/icons/${hash}.png` : undefined;
   }
 
+  resolveFluidIconUrl(
+    fluidId: string,
+    displayName: string,
+  ): string | undefined {
+    const hash = this.#index?.fluidIconHash(fluidId, displayName);
+    return hash ? `/icons/${hash}.png` : undefined;
+  }
+
   async readIcon(hash: string): Promise<Uint8Array | null> {
     const path = this.#pathsByHash.get(hash);
     if (!path || !this.#index?.hasHash(hash)) return null;

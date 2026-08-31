@@ -22,7 +22,7 @@ public final class IconExportScreen extends GuiScreen {
             job.runBatch(BATCH_SIZE);
         }
 
-        drawCenteredString(fontRendererObj, "Exporting GTNH item icons", width / 2, height / 2 - 18, 0xffffff);
+        drawCenteredString(fontRendererObj, "Exporting GTNH resource icons", width / 2, height / 2 - 18, 0xffffff);
         drawCenteredString(
             fontRendererObj,
             job.processed() + " / " + job.total() + "  ·  " + job.failureCount() + " skipped",

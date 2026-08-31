@@ -5,7 +5,7 @@ const iconPathSchema = z
   .string()
   .regex(/^icons\/([0-9a-f]{2})\/\1[0-9a-f]{62}\.png$/);
 
-export const iconManifestEntrySchema = z
+export const iconManifestItemEntrySchema = z
   .object({
     kind: z.literal("item"),
     registry: z.string().min(3),
@@ -17,9 +17,24 @@ export const iconManifestEntrySchema = z
   })
   .strict();
 
+export const iconManifestFluidEntrySchema = z
+  .object({
+    kind: z.literal("fluid"),
+    fluidId: z.string().min(1),
+    displayName: z.string(),
+    png: iconPathSchema,
+  })
+  .strict();
+
+export const iconManifestEntrySchema = z.discriminatedUnion("kind", [
+  iconManifestItemEntrySchema,
+  iconManifestFluidEntrySchema,
+]);
+
 export const iconExportFailureSchema = z
   .object({
     legacyId: z.string().nullable(),
+    fluidId: z.string().min(1).optional(),
     displayName: z.string(),
     reason: z.string(),
   })

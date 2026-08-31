@@ -36,6 +36,12 @@ describe("IconPackStore", () => {
     expect(store.resolveIconUrl("unknown:item:0", "Iron Ingot")).toBe(
       `/icons/${hash}.png`,
     );
+    expect(
+      store.resolveFluidIconUrl(
+        "ammonium nitrate solution",
+        "Ammonium Nitrate Solution",
+      ),
+    ).toBe(`/icons/${hash}.png`);
     await expect(store.readIcon(hash)).resolves.toEqual(
       expect.objectContaining({ byteLength: 3 }),
     );
@@ -72,6 +78,12 @@ function manifest() {
         nbtHash: null,
         legacyId: "minecraft:iron_ingot:0",
         displayName: "Iron Ingot",
+        png: `icons/aa/${hash}.png`,
+      },
+      {
+        kind: "fluid",
+        fluidId: "ammonium nitrate solution",
+        displayName: "Ammonium Nitrate Solution",
         png: `icons/aa/${hash}.png`,
       },
     ],
