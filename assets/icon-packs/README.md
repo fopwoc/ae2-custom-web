@@ -15,3 +15,7 @@ The archive contains an `ae2-icons/v1` manifest and its content-addressed PNG tr
 The archive is used instead of committing roughly 49,000 individual files. Its checksum is recorded beside it and verified in CI.
 
 This is a generated rendering of third-party game and mod resources. It is not covered by the repository's WTFNMFPL license; see `THIRD_PARTY.md`.
+
+```bash
+tar -czf assets.tar.gz manifest.json icons && sha256sum assets.tar.gz > assets.tar.gz.sha256
+```
