@@ -12,13 +12,13 @@ export const init: ServerInit = async () => {
   });
   const icons = await iconPack.load();
   if (icons.state === "loaded") {
-    log("info", "startup", "Item icon pack loaded", icons);
+    log("info", "startup", "Resource icon pack loaded", icons);
   } else if (icons.state === "unavailable") {
-    log("warn", "startup", "Item icon pack unavailable; using fallbacks", {
+    log("error", "startup", "Resource icon pack unavailable; using fallbacks", {
       reason: icons.reason,
     });
   } else {
-    log("info", "startup", "Item icon pack disabled");
+    log("info", "startup", "Resource icon pack disabled");
   }
   log("info", "startup", "AE2 Terminal ready");
 };

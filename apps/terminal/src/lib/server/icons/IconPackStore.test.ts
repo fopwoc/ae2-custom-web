@@ -87,6 +87,12 @@ function manifest() {
         png: `icons/aa/${hash}.png`,
       },
     ],
-    failures: [],
+    failures: [
+      {
+        fluidId: "witchery:brewgas",
+        displayName: "Brew Gas",
+        reason: "IllegalArgumentException: Fluid has no stitched texture",
+      },
+    ],
   };
 }

@@ -247,8 +247,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .progress-track > span,
+  .activity-track > span,
   .machine-button {
+    animation: none;
     transition: none;
+  }
+
+  .activity-track > span {
+    width: 100%;
+    opacity: 0.65;
   }
 }

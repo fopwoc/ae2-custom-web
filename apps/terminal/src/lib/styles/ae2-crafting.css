@@ -146,27 +146,61 @@
   font: 650 var(--text-sm)/1 var(--font-mono);
 }
 
-.overall-progress {
+.crafting-activity {
   display: grid;
   gap: var(--space-xs);
   padding: var(--space-md) var(--space-sm);
 }
 
-.overall-progress > span:first-child {
+.crafting-activity-heading {
   display: flex;
   justify-content: space-between;
+  gap: var(--space-sm);
   color: var(--color-muted);
   font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.07em;
 }
 
-.overall-progress strong {
+.crafting-activity-heading strong {
   color: var(--color-ink);
   font-family: var(--font-mono);
 }
 
-.progress-track {
+.crafting-activity-counts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  margin: 0;
+  background: var(--color-rule-strong);
+  border: var(--rule-hair) solid var(--color-rule-strong);
+}
+
+.crafting-activity-counts div {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-paper-3);
+}
+
+.crafting-activity-counts dt {
+  overflow: hidden;
+  color: var(--color-muted);
+  font-size: 0.65rem;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.crafting-activity-counts dd {
+  margin: 0;
+  font: 650 var(--text-sm)/1 var(--font-mono);
+}
+
+.activity-track {
   height: 0.35rem;
   display: block;
   overflow: hidden;
@@ -174,10 +208,22 @@
   border: var(--rule-hair) solid var(--color-rule-strong);
 }
 
-.progress-track > span {
+.activity-track > span {
   height: 100%;
+  width: 32%;
   display: block;
   background: var(--color-success);
+  animation: crafting-activity 1.6s linear infinite;
+}
+
+@keyframes crafting-activity {
+  from {
+    transform: translateX(-110%);
+  }
+
+  to {
+    transform: translateX(315%);
+  }
 }
 
 .craft-grid {
@@ -237,9 +283,11 @@
   font: var(--text-xs)/1 var(--font-mono);
 }
 
-.craft-slot .progress-track {
+.craft-slot-crafted {
   grid-column: 1 / -1;
   align-self: end;
+  color: var(--color-muted);
+  font: var(--text-xs)/1 var(--font-mono);
 }
 
 .crafting-actions {

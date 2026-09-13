@@ -31,14 +31,26 @@ export const iconManifestEntrySchema = z.discriminatedUnion("kind", [
   iconManifestFluidEntrySchema,
 ]);
 
-export const iconExportFailureSchema = z
-  .object({
-    legacyId: z.string().nullable(),
-    fluidId: z.string().min(1).optional(),
-    displayName: z.string(),
-    reason: z.string(),
-  })
-  .strict();
+const iconExportFailureDetailsSchema = {
+  displayName: z.string(),
+  reason: z.string(),
+};
+
+export const iconExportFailureSchema = z.union([
+  z
+    .object({
+      legacyId: z.string().nullable(),
+      ...iconExportFailureDetailsSchema,
+    })
+    .strict(),
+  z
+    .object({
+      fluidId: z.string().min(1),
+      legacyId: z.null().optional(),
+      ...iconExportFailureDetailsSchema,
+    })
+    .strict(),
+]);
 
 export const iconManifestSchema = z
   .object({

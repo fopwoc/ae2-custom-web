@@ -51,11 +51,6 @@ export class IconManifestIndex {
     if (exact) return exact;
 
     for (const candidate of [displayName, humanizeFluidId(fluidId)]) {
-      const displayHash = this.#byDisplayName.get(
-        normalizeDisplayName(candidate),
-      );
-      if (displayHash) return displayHash;
-
       const fluidIcon = this.#byFluidName.get(normalizeFluidName(candidate));
       if (fluidIcon) return fluidIcon.hash;
     }

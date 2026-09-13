@@ -70,15 +70,29 @@
     "failures": {
       "type": "array",
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["legacyId", "displayName", "reason"],
-        "properties": {
-          "legacyId": { "type": ["string", "null"] },
-          "fluidId": { "type": "string", "minLength": 1 },
-          "displayName": { "type": "string" },
-          "reason": { "type": "string" }
-        }
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["legacyId", "displayName", "reason"],
+            "properties": {
+              "legacyId": { "type": ["string", "null"] },
+              "displayName": { "type": "string" },
+              "reason": { "type": "string" }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["fluidId", "displayName", "reason"],
+            "properties": {
+              "fluidId": { "type": "string", "minLength": 1 },
+              "legacyId": { "type": "null" },
+              "displayName": { "type": "string" },
+              "reason": { "type": "string" }
+            }
+          }
+        ]
       }
     }
   },

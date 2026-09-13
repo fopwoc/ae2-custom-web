@@ -1,5 +1,9 @@
 <script lang="ts">
-  import type { CpuDetail, CpuIngredient } from '@ae2-terminal/ae2-api';
+  import type {
+    CpuDetail,
+    CpuIngredient,
+    CpuSummary,
+  } from '@ae2-terminal/ae2-api';
 
   import { api, jsonRequest } from '$lib/api/browser-client';
   import {
@@ -19,39 +23,122 @@
   let detailBusy = $state(false);
   let actionBusy = $state(false);
   let confirmCancel = $state(false);
+  let detailReceivedAt = $state(0);
+  let clockNow = $state(Date.now());
+  let refreshDetail: (() => void) | null = null;
 
   let cpus = $derived(Object.entries(terminal.cpus));
   let selectedSummary = $derived(
     terminal.selectedCpu ? (terminal.cpus[terminal.selectedCpu] ?? null) : null,
   );
-  let overallProgress = $derived(
-    detail?.items?.length ? progressFor(detail.items) : null,
+  let activity = $derived(
+    detail?.items?.length ? summarizeActivity(detail.items) : emptyActivity(),
+  );
+  let elapsed = $derived(
+    detail?.isBusy && detail.hasTrackingInfo
+      ? Math.max(
+          0,
+          detail.timeElapsed + Math.max(0, clockNow - detailReceivedAt),
+        )
+      : null,
   );
 
   $effect(() => {
     const network = terminal.selectedNetwork;
     const cpu = terminal.selectedCpu;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let running = false;
+    let itemOrder: string[] = [];
+    let jobSignature: string | null = null;
+
     confirmCancel = false;
     if (network === null || !cpu) {
       detail = null;
       return;
     }
-    void loadDetail(network, cpu);
+    const selectedNetwork = network;
+    const selectedCpu = cpu;
+    detailBusy = true;
+
+    async function refresh() {
+      if (running || cancelled) return;
+      running = true;
+      let pollDelay = 5_000;
+
+      try {
+        const [detailResult, cpusResult] = await Promise.allSettled([
+          api<CpuDetail>(
+            `/api/networks/${selectedNetwork}/cpus/${encodeURIComponent(selectedCpu)}`,
+          ),
+          api<Record<string, CpuSummary>>(
+            `/api/networks/${selectedNetwork}/cpus`,
+          ),
+        ]);
+        if (cancelled) return;
+
+        if (cpusResult.status === 'fulfilled') {
+          terminal.cpus = cpusResult.value;
+          if (!cpusResult.value[selectedCpu]) {
+            terminal.selectedCpu = Object.keys(cpusResult.value)[0] ?? null;
+            return;
+          }
+        }
+
+        if (detailResult.status === 'rejected') throw detailResult.reason;
+
+        const nextDetail = detailResult.value;
+        const nextSignature = nextDetail.isBusy
+          ? `${nextDetail.finalOutput?.itemid ?? 'job'}:${nextDetail.timeStarted}`
+          : null;
+        if (nextSignature !== jobSignature) {
+          itemOrder = [];
+          jobSignature = nextSignature;
+        }
+
+        detail = {
+          ...nextDetail,
+          items: stableIngredients(nextDetail.items, itemOrder),
+        };
+        itemOrder = detail.items?.map(({ itemid }) => itemid) ?? [];
+        detailReceivedAt = Date.now();
+        clockNow = detailReceivedAt;
+        pollDelay = nextDetail.isBusy ? 2_000 : 5_000;
+      } catch (cause) {
+        terminal.error =
+          cause instanceof Error
+            ? cause.message
+            : 'Unable to refresh crafting CPU';
+      } finally {
+        if (!cancelled) {
+          running = false;
+          detailBusy = false;
+          timer = setTimeout(() => void refresh(), pollDelay);
+        }
+      }
+    }
+
+    const refreshNow = () => {
+      if (running) return;
+      if (timer) clearTimeout(timer);
+      void refresh();
+    };
+    refreshDetail = refreshNow;
+    void refresh();
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+      if (refreshDetail === refreshNow) refreshDetail = null;
+    };
   });
 
-  async function loadDetail(network: number, cpu: string) {
-    detailBusy = true;
-    try {
-      detail = await api<CpuDetail>(
-        `/api/networks/${network}/cpus/${encodeURIComponent(cpu)}`,
-      );
-    } catch (cause) {
-      terminal.error =
-        cause instanceof Error ? cause.message : 'Unable to load crafting CPU';
-    } finally {
-      detailBusy = false;
-    }
-  }
+  $effect(() => {
+    if (!detail?.isBusy || !detail.hasTrackingInfo) return;
+    clockNow = Date.now();
+    const timer = setInterval(() => (clockNow = Date.now()), 1_000);
+    return () => clearInterval(timer);
+  });
 
   async function cancelJob() {
     if (terminal.selectedNetwork === null || !terminal.selectedCpu) return;
@@ -85,24 +172,33 @@
     );
   }
 
-  function ingredientProgress(ingredient: CpuIngredient): number | null {
-    const total =
-      ingredient.craftedTotal + ingredient.active + ingredient.pending;
-    if (total <= 0) return null;
-    return Math.max(0, Math.min(100, (ingredient.craftedTotal / total) * 100));
+  function emptyActivity() {
+    return { active: 0, pending: 0, stored: 0, crafted: 0 };
   }
 
-  function progressFor(items: CpuIngredient[]): number | null {
-    const totals = items.reduce(
+  function summarizeActivity(items: CpuIngredient[]) {
+    return items.reduce(
       (sum, item) => ({
+        active: sum.active + item.active,
+        pending: sum.pending + item.pending,
+        stored: sum.stored + item.stored,
         crafted: sum.crafted + item.craftedTotal,
-        total: sum.total + item.craftedTotal + item.active + item.pending,
       }),
-      { crafted: 0, total: 0 },
+      emptyActivity(),
     );
-    return totals.total > 0
-      ? Math.max(0, Math.min(100, (totals.crafted / totals.total) * 100))
-      : null;
+  }
+
+  function stableIngredients(
+    items: CpuIngredient[] | null | undefined,
+    order: string[],
+  ): CpuIngredient[] | null | undefined {
+    if (!items?.length || order.length === 0) return items;
+    const positions = new Map(order.map((itemid, index) => [itemid, index]));
+    return [...items].sort(
+      (left, right) =>
+        (positions.get(left.itemid) ?? Number.MAX_SAFE_INTEGER) -
+        (positions.get(right.itemid) ?? Number.MAX_SAFE_INTEGER),
+    );
   }
 </script>
 
@@ -119,7 +215,7 @@
       type="button"
       aria-label="Refresh processors"
       title="Refresh processors"
-      onclick={() => terminal.loadCurrent()}
+      onclick={() => refreshDetail?.()}
     >
       <TerminalIcon name="refresh" size={18} />
     </button>
@@ -205,24 +301,42 @@
               <div>
                 <dt>Elapsed</dt>
                 <dd>
-                  {detail.isBusy ? formatDuration(detail.timeElapsed) : '—'}
+                  {detail.isBusy
+                    ? elapsed === null
+                      ? 'Not tracked'
+                      : formatDuration(elapsed)
+                    : '—'}
                 </dd>
               </div>
             </dl>
           </header>
 
-          {#if detail.isBusy && overallProgress !== null}
-            <div
-              class="overall-progress"
-              aria-label={`Overall tracked progress ${Math.round(overallProgress)}%`}
-            >
-              <span
-                ><strong>{Math.round(overallProgress)}%</strong><span
-                  >tracked progress</span
-                ></span
-              >
-              <span class="progress-track"
-                ><span style={`width: ${overallProgress}%`}></span></span
+          {#if detail.isBusy}
+            <div class="crafting-activity" aria-label="Live crafting activity">
+              <span class="crafting-activity-heading">
+                <strong>Working</strong>
+                <span
+                  >{detail.hasTrackingInfo
+                    ? `${formatCompactAmount(activity.crafted)} crafted`
+                    : 'Detailed tracking unavailable'}</span
+                >
+              </span>
+              <dl class="crafting-activity-counts">
+                <div title={`${formatAmount(activity.active)} active`}>
+                  <dt>Active</dt>
+                  <dd>{formatCompactAmount(activity.active)}</dd>
+                </div>
+                <div title={`${formatAmount(activity.pending)} queued`}>
+                  <dt>Queued</dt>
+                  <dd>{formatCompactAmount(activity.pending)}</dd>
+                </div>
+                <div title={`${formatAmount(activity.stored)} stored`}>
+                  <dt>Stored</dt>
+                  <dd>{formatCompactAmount(activity.stored)}</dd>
+                </div>
+              </dl>
+              <span class="activity-track" aria-hidden="true"
+                ><span></span></span
               >
             </div>
           {/if}
@@ -234,7 +348,6 @@
                   ingredient.itemid,
                   ingredient.itemname,
                 )}
-                {@const progress = ingredientProgress(ingredient)}
                 <article
                   class="craft-slot"
                   title={`${ingredient.itemname}\n${ingredient.itemid}\n${formatAmount(ingredient.craftedTotal)} crafted\n${formatAmount(ingredient.active)} active\n${formatAmount(ingredient.pending)} pending`}
@@ -249,13 +362,17 @@
                   >
                   <span class="craft-slot-name">{ingredient.itemname}</span>
                   <span class="craft-slot-state"
+                    >{ingredient.active > 0
+                      ? `${formatCompactAmount(ingredient.active)} active`
+                      : ingredient.pending > 0
+                        ? `${formatCompactAmount(ingredient.pending)} queued`
+                        : `${formatCompactAmount(ingredient.stored)} stored`}</span
+                  >
+                  <span
+                    class="craft-slot-crafted"
+                    title={`${formatAmount(ingredient.craftedTotal)} crafted`}
                     >{formatCompactAmount(ingredient.craftedTotal)} crafted</span
                   >
-                  {#if progress !== null}
-                    <span class="progress-track"
-                      ><span style={`width: ${progress}%`}></span></span
-                    >
-                  {/if}
                 </article>
               {/each}
             </div>

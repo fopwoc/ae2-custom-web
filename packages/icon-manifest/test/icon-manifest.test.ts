@@ -11,6 +11,9 @@ const fluidHashes = {
   silicone: "e".repeat(64),
   solderingAlloy: "f".repeat(64),
   ammoniumNitrate: "1".repeat(64),
+  hydrogen: "2".repeat(64),
+  lava: "3".repeat(64),
+  oxygen: "4".repeat(64),
 };
 
 function manifest() {
@@ -42,6 +45,21 @@ function manifest() {
 describe("icon manifest", () => {
   it("parses a versioned exporter manifest", () => {
     expect(iconManifestSchema.parse(manifest()).entries).toHaveLength(1);
+  });
+
+  it("accepts a fluid render failure without an item legacy id", () => {
+    const value = {
+      ...manifest(),
+      failures: [
+        {
+          fluidId: "witchery:brewgas",
+          displayName: "Brew Gas",
+          reason: "IllegalArgumentException: Fluid has no stitched texture",
+        },
+      ],
+    };
+
+    expect(iconManifestSchema.parse(value).failures).toEqual(value.failures);
   });
 
   it("accepts an omitted NBT hash for ordinary item stacks", () => {
@@ -87,6 +105,9 @@ describe("icon manifest", () => {
     ["steam", "Steam", fluidHashes.steam],
     ["molten.hssg", "Molten HSS-G", fluidHashes.hssg],
     ["molten.silicone", "Molten Silicone", fluidHashes.silicone],
+    ["hydrogen", "Hydrogen", fluidHashes.hydrogen],
+    ["lava", "Lava", fluidHashes.lava],
+    ["oxygen", "Oxygen", fluidHashes.oxygen],
     [
       "molten.solderingalloy",
       "Molten Soldering Alloy",
@@ -124,6 +145,13 @@ describe("icon manifest", () => {
           "Ammonium Nitrate Solution Cell",
           fluidHashes.ammoniumNitrate,
         ),
+        fluidCell(
+          "gregtech:hydrogen_cell:0",
+          "Hydrogen Cell",
+          fluidHashes.hydrogen,
+        ),
+        fluidCell("gregtech:lava_cell:0", "Lava Cell", fluidHashes.lava),
+        fluidCell("gregtech:oxygen_cell:0", "Oxygen Cell", fluidHashes.oxygen),
       );
       const index = new IconManifestIndex(iconManifestSchema.parse(value));
 
@@ -169,6 +197,26 @@ describe("icon manifest", () => {
         "Ammonium Nitrate Solution",
       ),
     ).toBe(secondHash);
+  });
+
+  it("does not use an unrelated item with the same name before a fluid cell", () => {
+    const sameNameItem = {
+      ...manifest().entries[0]!,
+      registry: "example:hydrogen",
+      legacyId: "example:hydrogen:0",
+      displayName: "Hydrogen",
+      png: `icons/${firstHash.slice(0, 2)}/${firstHash}.png`,
+    };
+    const value = {
+      ...manifest(),
+      entries: [
+        sameNameItem,
+        fluidCell("gregtech:hydrogen_cell:0", "Hydrogen Cell", secondHash),
+      ],
+    };
+    const index = new IconManifestIndex(iconManifestSchema.parse(value));
+
+    expect(index.fluidIconHash("hydrogen", "Hydrogen")).toBe(secondHash);
   });
 });
 

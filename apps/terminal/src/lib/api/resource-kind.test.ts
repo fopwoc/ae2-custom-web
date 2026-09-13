@@ -10,6 +10,9 @@ describe("inventoryResourceKind", () => {
     "molten.silicone",
     "molten.solderingalloy",
     "ammonium nitrate solution",
+    "hydrogen",
+    "lava",
+    "oxygen",
     "ae2fc:fluid_drop:0",
   ])("recognizes the GTNH fluid identity %s", (itemid) => {
     expect(inventoryResourceKind({ itemid })).toBe("fluid");

@@ -274,7 +274,6 @@ public final class IconExportJob {
 
     private void addFluidFailure(String fluidId, String displayName, Throwable cause) {
         JsonObject failure = new JsonObject();
-        failure.add("legacyId", JsonNull.INSTANCE);
         failure.addProperty("fluidId", fluidId);
         failure.addProperty("displayName", displayName);
         failure.addProperty(
