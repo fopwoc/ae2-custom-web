@@ -1,4 +1,4 @@
-FROM node:26.8.1-alpine3.23 AS build
+FROM node:26.13.0-alpine3.23 AS build
 
 RUN npm install --global pnpm@11.19.0
 ENV CI=true
@@ -16,7 +16,7 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm build
 RUN pnpm install --prod --frozen-lockfile
 
-FROM node:26.8.1-alpine3.23 AS runtime
+FROM node:26.13.0-alpine3.23 AS runtime
 
 ENV HOST=0.0.0.0 \
     ICON_PACK_DIR=/app/icon-pack \
